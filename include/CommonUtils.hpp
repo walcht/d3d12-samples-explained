@@ -5,6 +5,8 @@
 #include <string>
 #include <windows.h>
 #include <wrl.h>
+#include <iostream>
+#include <format>
 
 using Microsoft::WRL::ComPtr;
 
@@ -40,7 +42,7 @@ inline void GetAssetsPath(_Out_writes_(pathSize) WCHAR *path, UINT pathSize) {
   if (size == 0 || size == pathSize)
     throw std::exception();
 
-  WCHAR *last_slash = wcschr(path, L'\\');
+  WCHAR *last_slash = wcsrchr(path, L'\\');
   // No need to check if last_slash + 1 < pathSize because a path ending with
   // a slash is not a valid path
   if (last_slash)
@@ -70,7 +72,6 @@ inline void ThrowIfFailed(HRESULT hr) {
 
 inline HRESULT ReadDataFromFile(LPCWSTR filename, byte **data, UINT *size) {
   using namespace Microsoft::WRL;
-
   CREATEFILE2_EXTENDED_PARAMETERS extendedParams = {};
   extendedParams.dwSize = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
   extendedParams.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
@@ -82,7 +83,7 @@ inline HRESULT ReadDataFromFile(LPCWSTR filename, byte **data, UINT *size) {
   Wrappers::FileHandle file(CreateFile2(filename, GENERIC_READ, FILE_SHARE_READ,
                                         OPEN_EXISTING, &extendedParams));
   if (file.Get() == INVALID_HANDLE_VALUE) {
-    throw std::exception();
+    throw std::runtime_error("could not read file data (CreateFile2 failed)");
   }
 
   FILE_STANDARD_INFO fileInfo = {};

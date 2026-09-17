@@ -1,5 +1,30 @@
 # About
 
+Direct3D 12 samples adapted from the official
+[Direct3D 12 Samples repo][d3d12-samples-repo] with much more detailed
+explanations, CMake support (i.e., no Visual-Studio-sepcific files), detailed
+instructions on conceptual similarities with Vulkan (to bring home the point
+that modern graphics API share, to some degree, the same underyling GPU
+hardware model).
+
+Some very important design/code patterns related to Win32/COM/Direct3D12
+development are explained here. Make sure to read those alongside the code
+samples.
+
+If anything, doing these samples made me appreciate the insane amount of work
+in projects such as Wine where a compatibility layer is developed to run Windows
+executables (i.e., Win32API layer, Direct3D12-to-Vulkan converter, etc.).
+
+## How to go through the samples
+
+Samples are numbered accordingly from most basic to most advanced.
+You can use `diff` as below to showcase the added functionalities between each
+sample:
+
+```bash
+diff samples/sample_00_basic_window/D3D12Window.cpp \
+    samples/sample_01_basic_window/D3D12Window.cpp
+```
 
 ## ABI extensibility: COM vs. Vulkan approaches
 
@@ -127,9 +152,23 @@ If you are coming from Vulkan (like me).
 ## Build
 
 ```bash
-cmake -S . -B build/ -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake -S . -B build/
 cmake --build build/ --config [Debug|Release] -j10
 cd build
 ctest -C [Debug|Release] -j10
 cmake --install .
 ```
+
+If you want your Language Server to provide LSP functionalities:
+
+```bash
+cmake -S . -B build/ -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cp build/compile_commands.json .
+```
+[!NOTE]
+Building with MinGW is not supported because some WRL features are not supported
+(e.g., `FileHandle` and I also get tons of other compilation issues). Dealing
+with Win32 API + COM + D3D12 is already hard as it is, let's keep it simple
+and just use Visual Studio generator.
+
+[d3d12-samples-repo]: 

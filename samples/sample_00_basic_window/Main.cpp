@@ -8,7 +8,7 @@
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE /* legacy param */, PWSTR,
                     int cmd_show) {
-  D3D12Window d3d12window{1280, 720, L"Direct3D 12 Sample"};
+  D3D12Window d3d12window{1280, 720, L"Sample 00: Basic Window"};
   d3d12window.Run(cmd_show);
   return 0;
 }
