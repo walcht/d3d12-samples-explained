@@ -26,6 +26,47 @@ diff samples/sample_00_basic_window/D3D12Window.cpp \
     samples/sample_01_basic_window/D3D12Window.cpp
 ```
 
+## Build
+
+All samples can be built by invoking the top most CMake (you have to provide
+the path to the HLSL compiler `dxc.exe`):
+
+```bash
+cmake -S . -B build/ -DDXC_EXECUTABLE_PATH=$((Get-Command dxc.exe).Path)
+cmake --build build/ --config [Debug|Release] -j10
+cd build
+./build/samples/<sample-name>/[Debug|Release]/sample_00_basic_window.exe
+```
+
+If you want to debug any problems then run through `cdbX64.exe`:
+
+```bash
+cdbX64.exe ./build/samples/<sample-name>/[Debug|Release]/sample_00_basic_window.exe
+```
+
+If you are facing any issues then you should be aware that on Windows, GUI
+applications don't have a console attached to them by default so any
+stdout/stderrr/stdin operation are directed to void (i.e., nothing happens).
+
+On Debug builds, these samples attach to the console of the parent process if
+there is any, otherwise create a console window. In short, **if you want to
+see any std::cout output just build for Debug**.
+
+If you want your Language Server to provide LSP functionalities (e.g., for 
+Neovim clangd) then build to a separate directory and keep it:
+
+```bash
+cmake -S . -B build_for_lsp/ -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cp build_lsp/compile_commands.json .
+```
+
+> [!NOTE]
+> Building with MinGW is not supported because some WRL features are not supported
+> (e.g., `FileHandle` and I also get tons of other compilation issues). Dealing
+> with Win32 API + COM + D3D12 is already hard as it is, let's keep it simple
+> and just use Visual Studio generator.
+
+
 ## ABI extensibility: COM vs. Vulkan approaches
 
 If you look at any non-trivial COM application (e.g., our Direct3D 12 sample
@@ -148,27 +189,5 @@ GetHardwareAdapter();
 ```
 
 If you are coming from Vulkan (like me).
-
-## Build
-
-```bash
-cmake -S . -B build/
-cmake --build build/ --config [Debug|Release] -j10
-cd build
-ctest -C [Debug|Release] -j10
-cmake --install .
-```
-
-If you want your Language Server to provide LSP functionalities:
-
-```bash
-cmake -S . -B build/ -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-cp build/compile_commands.json .
-```
-[!NOTE]
-Building with MinGW is not supported because some WRL features are not supported
-(e.g., `FileHandle` and I also get tons of other compilation issues). Dealing
-with Win32 API + COM + D3D12 is already hard as it is, let's keep it simple
-and just use Visual Studio generator.
 
 [d3d12-samples-repo]: 

@@ -4,7 +4,7 @@ project(d3d12-samples LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 # In case this fails you just have to set -DDXC_EXECUTABLE_PATH=<path-to-dxc>
-set(DXC_EXECUTABLE_PATH  "" CACHE PATH "Path to HLSL compiler (dxc.exe). If already in PATH consider using the following PowerShell command: -DXC_EXECUTABLE_PATH=$((Get-Command dxc.exe).Path)")
+set(DXC_EXECUTABLE_PATH  "" CACHE PATH "Path to HLSL compiler (dxc.exe). If already in PATH consider using the following PowerShell command: -DDXC_EXECUTABLE_PATH=$((Get-Command dxc.exe).Path)")
 if (NOT DXC_EXECUTABLE_PATH)
   message(FATAL_ERROR "Path to HLSL compiler (dxc.exe) has to be provided. Consider setting the following CMake variable: -DXC_EXECUTABLE_PATH=<path-to-dxc>")
 endif()
