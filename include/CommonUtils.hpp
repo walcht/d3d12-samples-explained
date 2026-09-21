@@ -107,4 +107,29 @@ inline HRESULT ReadDataFromFile(LPCWSTR filename, byte **data, UINT *size) {
   return S_OK;
 }
 
+inline std::vector<UINT8> GenerateCheckboardTexture(UINT width, UINT height, UINT cellsize = 32)
+{
+  const size_t stride = 4;
+  std::vector<UINT8> data;
+  data.resize(width * height * stride);
+  for (size_t n = 0; n < width * height; ++n) {
+    UINT x = n % width;
+    UINT y = n / width;
+    UINT i = x / cellsize;
+    UINT j = y / cellsize;
+    if (i % 2 == j % 2) {
+      data[n * stride + 0] = 0x00;
+      data[n * stride + 1] = 0x00;
+      data[n * stride + 2] = 0x00;
+      data[n * stride + 3] = 0xFF;
+    } else {
+      data[n * stride + 0] = 0xFF;
+      data[n * stride + 1] = 0xFF;
+      data[n * stride + 2] = 0xFF;
+      data[n * stride + 3] = 0xFF;
+    }
+  }
+  return data;
+}
+
 } // namespace Utils
